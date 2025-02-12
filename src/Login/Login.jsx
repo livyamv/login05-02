@@ -3,10 +3,11 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import api from "../axios/axios";
 
 function Login() {
   const [user, setUser] = useState({
@@ -15,13 +16,25 @@ function Login() {
   });
 
   const onChange = (event) => {
-    const{name, value} = event.target;
-    setUser({...user,[name]:value})
+    const { name, value } = event.target;
+    setUser({ ...user, [name]: value });
   };
 
-  const handleSubmit = (event) =>{
+  const handleSubmit = (event) => {
     event.preventDefault();
-    alert("Email:"+user.email+" "+"Senha:"+user.password)
+    login();
+  };
+
+  async function login() {
+    await api.postLogin(user).then(
+      (response) => {
+        alert(response.data.message);
+      },
+      (error) => {
+        console.log(error);
+        alert(error.response.data.error);
+      }
+    );
   }
 
   return (
@@ -34,13 +47,13 @@ function Login() {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ margin: 1, backgroundColor: "blueviolet" }}>
+        <Avatar sx={{ margin: 1, backgroundColor: "#90DBF4" }}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           Vio
         </Typography>
-        <Box component="form" sx={{ marginTop: 1 }} onSubmit={handleSubmit} noValidate>
+        <Box component="form" sx={{ mt: 1 }} onSubmit={handleSubmit} noValidate>
           <TextField
             required
             fullWidth
@@ -54,7 +67,7 @@ function Login() {
           <TextField
             required
             fullWidth
-            id="password"
+            id="senha"
             label="Senha"
             name="password"
             margin="normal"
@@ -62,12 +75,9 @@ function Login() {
             value={user.password}
             onChange={onChange}
           />
+
           <Button
-            sx={{
-              marginTop: 3,
-              marginBottom: 2,
-              backgroundColor: "blueviolet",
-            }}
+            sx={{ mt: 3, mb: 2, backgroundColor: "#A3C4F3" }}
             fullWidth
             type="submit"
             variant="contained"
